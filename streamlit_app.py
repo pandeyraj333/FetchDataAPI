@@ -1,4 +1,7 @@
 import streamlit as st
+import requests
+import json
+import pandas as pd
 
 # Mock function to simulate fetching data from a database or API
 def fetch_property_features(property_id):
