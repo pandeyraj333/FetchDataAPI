@@ -77,6 +77,16 @@ def fetch_property_details(property_id):
         return None
 
 
+def attach_tables(df_main, df_features_raw):
+    # Pivot the features table (groupName becomes columns)
+    df_features = df_features_raw.set_index("groupName").T.reset_index(drop=True)
+
+    # Combine horizontally (same as pd.concat with axis=1)
+    combined_df = pd.concat([df_main.reset_index(drop=True), df_features], axis=1)
+
+    return combined_df
+
+
 
 # Streamlit UI
 st.title(f"🏡 Property Feature Lookup")
@@ -86,19 +96,11 @@ property_id = st.text_input("Enter Property ID", placeholder="e.g., 30029515")
 if st.button("Get Details"):
     if property_id:
         df = fetch_property_details(property_id.strip())
-        if df is not None and not df.empty:
-            st.dataframe(df, use_container_width=True)
+        df2 = fetch_property_features(property_id.strip())
+        df_attached = attach_tables(df,df2)
+        if df_attached is not None and not df_attached.empty:
+            st.dataframe(df_attached, use_container_width=True)
         else:
             st.warning("No Details found or invalid property ID.")
-    else:
-        st.warning("Please enter a Property ID.")
-
-if st.button("Get Features"):
-    if property_id:
-        df = fetch_property_features(property_id.strip())
-        if df is not None and not df.empty:
-            st.dataframe(df, use_container_width=True)
-        else:
-            st.warning("No features found or invalid property ID.")
     else:
         st.warning("Please enter a Property ID.")
