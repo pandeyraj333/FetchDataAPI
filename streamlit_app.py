@@ -1,13 +1,29 @@
 import streamlit as st
 
 # Mock function to simulate fetching data from a database or API
-def fetch_property_data(property_id):
-    mock_data = {
-        "101": {"Address": "123 Main St", "City": "Mumbai", "Price": "₹1.2 Cr", "Bedrooms": 3, "Bathrooms": 2},
-        "102": {"Address": "456 Park Ave", "City": "Delhi", "Price": "₹2.5 Cr", "Bedrooms": 4, "Bathrooms": 3},
-        "103": {"Address": "789 Sea View", "City": "Goa", "Price": "₹3 Cr", "Bedrooms": 5, "Bathrooms": 4},
+def fetch_property_features(property_id):
+    url = f"https://ap-southeast-2.api.vaultre.com.au/api/v1.3/properties/{property_id}/features"
+
+    headers = {
+        'Authorization': st.secrets["api"]["auth_token"],
+        'x-api-key': st.secrets["api"]["api_key"]
     }
-    return mock_data.get(property_id)
+
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 200:
+        data = response.json()
+
+        rows = []
+        for group in data["items"]:
+            group_name = group["groupName"]
+            feature_names = [feature["displayName"] for feature in group.get("features", [])]
+            features_concatenated = ", ".join(feature_names)
+            rows.append({"groupName": group_name, "features": features_concatenated})
+    
+        # Create DataFrame
+        df = pd.DataFrame(rows)
+    return df
 
 # Streamlit UI
 st.set_page_config(page_title="Property Lookup", layout="centered")
@@ -16,9 +32,9 @@ st.title("🏡 Property Lookup by ID")
 
 property_id = st.text_input("Enter Property ID", placeholder="e.g., 101")
 
-if st.button("Get Property Details"):
+if st.button("Get Property Features Details"):
     if property_id:
-        data = fetch_property_data(property_id.strip())
+        data = fetch_property_features(property_id.strip())
         if data:
             st.success("Property details found:")
             st.write("### 📋 Details")
