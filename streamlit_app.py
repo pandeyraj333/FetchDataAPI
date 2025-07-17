@@ -5,7 +5,7 @@ import pandas as pd
 
 # Mock function to simulate fetching data from a database or API
 def fetch_property_features(property_id):
-    url = f"https://ap-southeast-2.api.vaultre.com.au/api/v1.3/properties/residential/sale/{property_id}"
+    url = f"https://ap-southeast-2.api.vaultre.com.au/api/v1.3/properties/{property_id}/features"
 
     headers = {
         'Authorization': st.secrets["api"]["auth_token"],
@@ -29,8 +29,7 @@ def fetch_property_features(property_id):
     return dataframe
 
 def fetch_property_details(property_id):
-    url = f"https://ap-southeast-2.api.vaultre.com.au/api/v1.3/properties/{property_id}/features"
-
+    url = f"https://ap-southeast-2.api.vaultre.com.au/api/v1.3/properties/residential/sale/{property_id}"
     headers = {
         'Authorization': st.secrets["api"]["auth_token"],
         'x-api-key': st.secrets["api"]["api_key"]
