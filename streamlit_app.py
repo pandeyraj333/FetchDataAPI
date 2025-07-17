@@ -42,40 +42,45 @@ def fetch_property_details(property_id):
         data = response.json()
         rows = []
         rows.append({
-            'displayAddress': data['displayAddress'],
-            'saleLifeId': data['saleLifeId'],
-            'bed': data['bed'],
-            'bath': data['bath'],
-            'garages': data['garages'],
-            'carports': data['carports'],
-            'openSpaces': data['openSpaces'],
-            'ensuites': data['ensuites'],
-            'toilets': data['toilets'],
-            'floorArea': data['floorArea']['value'],
-            'landArea': data['landArea']['value'],
-            'receptionRooms': data['receptionRooms'],
-            'yearBuilt': data['yearBuilt'],
-            'lotNumber': data['lotNumber'],
-            'rpdp': data['rpdp'],
-            'certificateOfTitle': data['certificateOfTitle'],
-            'legalDescription': data['legalDescription'],
-            'landValue': data['landValue'],
-            'improvementValue': data['improvementValue'],
-            'rateableValue': data['rateableValue'],
-            'Council':  data['rates']['council']['value'],
-            'methodOfSale': data['methodOfSale'],
-            'heading': data['heading'],
-            'description': data['description'],
-            'internalRemarks': data['internalRemarks'],
-            'editableBy':  data['editableBy'][0]['name']
+            'displayAddress': data.get('displayAddress'),
+            'saleLifeId': data.get('saleLifeId'),
+            'bed': data.get('bed'),
+            'bath': data.get('bath'),
+            'garages': data.get('garages'),
+            'carports': data.get('carports'),
+            'openSpaces': data.get('openSpaces'),
+            'ensuites': data.get('ensuites'),
+            'toilets': data.get('toilets'),
+            'floorArea': data.get('floorArea', {}).get('value'),
+            'landArea': data.get('landArea', {}).get('value'),
+            'receptionRooms': data.get('receptionRooms'),
+            'yearBuilt': data.get('yearBuilt'),
+            'lotNumber': data.get('lotNumber'),
+            'rpdp': data.get('rpdp'),
+            'certificateOfTitle': data.get('certificateOfTitle'),
+            'legalDescription': data.get('legalDescription'),
+            'landValue': data.get('landValue'),
+            'improvementValue': data.get('improvementValue'),
+            'rateableValue': data.get('rateableValue'),
+            'Council': data.get('rates', {}).get('council', {}).get('value'),
+            'methodOfSale': data.get('methodOfSale'),
+            'heading': data.get('heading'),
+            'description': data.get('description'),
+            'internalRemarks': data.get('internalRemarks'),
+            'editableBy': data.get('editableBy', [{}])[0].get('name')
         })
-        
+
         df = pd.DataFrame(rows)
-    return df
+        return df
+
+    else:
+        st.error(f"API request failed: {response.status_code} - {response.text}")
+        return None
+
 
 
 # Streamlit UI
-st.title(f"🏡 Property Feature Lookup token:{st.secrets["api"]["auth_token"]} Key: {st.secrets["api"]["api_key"]}")
+st.title(f"🏡 Property Feature Lookup")
 
 property_id = st.text_input("Enter Property ID", placeholder="e.g., 30029515")
 
