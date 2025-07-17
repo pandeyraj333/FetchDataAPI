@@ -25,11 +25,11 @@ def fetch_property_features(property_id):
             rows.append({"groupName": group_name, "features": features_concatenated})
     
         # Create DataFrame
-        df = pd.DataFrame(rows)
-    return df
+        dataframe = pd.DataFrame(rows)
+    return dataframe
 
 # Streamlit UI
-st.title("🏡 Property Feature Lookup")
+st.title(f"🏡 Property Feature Lookup token:{st.secrets["api"]["auth_token"]} Key: {st.secrets["api"]["api_key"]}")
 
 property_id = st.text_input("Enter Property ID", placeholder="e.g., 30029515")
 
