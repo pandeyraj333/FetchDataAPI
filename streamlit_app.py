@@ -26,21 +26,16 @@ def fetch_property_features(property_id):
     return df
 
 # Streamlit UI
-st.set_page_config(page_title="Property Lookup", layout="centered")
+st.title("🏡 Property Feature Lookup")
 
-st.title("🏡 Property Lookup by ID")
+property_id = st.text_input("Enter Property ID", placeholder="e.g., 30029515")
 
-property_id = st.text_input("Enter Property ID", placeholder="e.g., 101")
-
-if st.button("Get Property Features Details"):
+if st.button("Get Features"):
     if property_id:
-        data = fetch_property_features(property_id.strip())
-        if data:
-            st.success("Property details found:")
-            st.write("### 📋 Details")
-            for key, value in data.items():
-                st.write(f"**{key}:** {value}")
+        df = fetch_property_features(property_id.strip())
+        if df is not None and not df.empty:
+            st.dataframe(df, use_container_width=True)
         else:
-            st.error("Property ID not found. Please try another one.")
+            st.warning("No features found or invalid property ID.")
     else:
         st.warning("Please enter a Property ID.")
