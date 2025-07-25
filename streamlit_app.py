@@ -4,12 +4,12 @@ import json
 import pandas as pd
 
 # Mock function to simulate fetching data from a database or API
-def fetch_property_features(property_id):
+def fetch_property_features(auth_token, api_key, property_id):
     url = f"https://ap-southeast-2.api.vaultre.com.au/api/v1.3/properties/{property_id}/features"
 
     headers = {
-        'Authorization': st.secrets["api"]["auth_token"],
-        'x-api-key': st.secrets["api"]["api_key"]
+        'Authorization': auth_token #st.secrets["api"]["auth_token"],
+        'x-api-key': api_key #st.secrets["api"]["api_key"]
     }
 
     response = requests.get(url, headers=headers)
@@ -28,11 +28,11 @@ def fetch_property_features(property_id):
         dataframe = pd.DataFrame(rows)
     return dataframe
 
-def fetch_property_details(property_id):
+def fetch_property_details(auth_token, api_key, property_id):
     url = f"https://ap-southeast-2.api.vaultre.com.au/api/v1.3/properties/residential/sale/{property_id}"
     headers = {
-        'Authorization': st.secrets["api"]["auth_token"],
-        'x-api-key': st.secrets["api"]["api_key"]
+        'Authorization': auth_token #st.secrets["api"]["auth_token"],
+        'x-api-key': api_key #st.secrets["api"]["api_key"]
     }
 
     response = requests.get(url, headers=headers)
@@ -92,11 +92,13 @@ def attach_tables(df_main, df_features_raw):
 st.title(f"🏡 Property Feature Lookup")
 
 property_id = st.text_input("Enter Property ID", placeholder="e.g., 30029515")
+auth_token = st.text_input("Enter Authorization Token")
+api_key = st.text_input("Enter API Key")
 
 if st.button("Get Details"):
     if property_id:
-        df = fetch_property_details(property_id.strip())
-        df2 = fetch_property_features(property_id.strip())
+        df = fetch_property_details(auth_token.strip(), api_key.strip(), property_id.strip())
+        df2 = fetch_property_features(auth_token.strip(), api_key.strip(), property_id.strip())
         df_attached = attach_tables(df,df2)
         if df_attached is not None and not df_attached.empty:
             st.dataframe(df_attached, use_container_width=True)
