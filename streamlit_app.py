@@ -8,7 +8,7 @@ def fetch_property_features(auth_token, api_key, property_id):
     url = f"https://ap-southeast-2.api.vaultre.com.au/api/v1.3/properties/{property_id}/features"
 
     headers = {
-        'Authorization': auth_token #st.secrets["api"]["auth_token"],
+        'Authorization': auth_token, #st.secrets["api"]["auth_token"],
         'x-api-key': api_key #st.secrets["api"]["api_key"]
     }
 
@@ -31,7 +31,7 @@ def fetch_property_features(auth_token, api_key, property_id):
 def fetch_property_details(auth_token, api_key, property_id):
     url = f"https://ap-southeast-2.api.vaultre.com.au/api/v1.3/properties/residential/sale/{property_id}"
     headers = {
-        'Authorization': auth_token #st.secrets["api"]["auth_token"],
+        'Authorization': auth_token, #st.secrets["api"]["auth_token"],
         'x-api-key': api_key #st.secrets["api"]["api_key"]
     }
 
